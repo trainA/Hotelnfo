@@ -156,20 +156,33 @@ public class DAO {
     public ArrayList<Data>QureyHotelNameAndTime(String HotelName,String StartDay,String EndDay,String StartTime,String EndTime)
     {
         DBOpenHelper helper=new DBOpenHelper(context);
-        //2.获取Sqlite DB的实例
+//        //2.获取Sqlite DB的实例
+//        StringBuilder sb = new StringBuilder();
+//        Formatter formatter = new Formatter(sb, Locale.US);
+//        formatter.format("select *from hotelInfo\n" +
+//                        "where (addday > %s and addday < %s and hotelname = %s)\n" +
+//                        "or (addday =  %s and addtime >=  %s  and addday <>  %s and hotelname = %s  ) \n" +
+//                        "or (addday =  %s  and addtime < %s and addday <>  %s and hotelname = %s) \n" +
+//                        "or (addday =  %s  and addtime >=  %s  and addtime <=  %s and hotelname = %s)", StartDay,EndDay,HotelName,
+//                StartDay,StartTime,EndDay,HotelName,
+//                        EndDay, EndTime,StartDay,HotelName,
+//                        StartDay,StartTime,EndTime,HotelName);
+//
+//        Log.e("sql按酒店名导出", formatter.toString()  );
         SQLiteDatabase db= helper.getWritableDatabase();
                 Cursor cursor = db.rawQuery("select *from hotelInfo\n" +
                 "where (addday > ? and addday < ? and hotelname = ?)\n" +
-                "or (addday =  ? and addtime >=  ?  and addday <>  ?and hotelname = ?  ) \n" +
+                "or (addday =  ? and addtime >=  ?  and addday <>  ? and hotelname = ?  ) \n" +
                 "or (addday =  ?  and addtime < ? and addday <>  ? and hotelname = ?) \n" +
                 "or (addday =  ?  and addtime >=  ?  and addtime <=  ? and hotelname = ?)", new String[]{StartDay,EndDay,HotelName,
                                                                                             StartDay,StartTime,EndDay,HotelName,
                                                                                             EndDay, EndTime,StartDay,HotelName,
 
-                                                                           StartDay,StartTime,EndTime,HotelName,});
+                                                                           StartDay,StartTime,EndTime,HotelName});
 
-                 db.close();
-                return getData(cursor);
+        ArrayList<Data> ans = getData(cursor);
+        db.close();
+        return ans;
     }
     public ArrayList<Data> QueryAppointTimeData(String StartDay,String EndDay,String StartTime,String EndTime){
 
@@ -187,19 +200,19 @@ public class DAO {
 //                                                                                            EndDay, EndTime,StartDay,
 //
 //                                                                           StartDay,StartTime,EndTime});
-        StringBuilder sb = new StringBuilder();
-// Send all output to the Appendable object sb
-        Formatter formatter = new Formatter(sb, Locale.US);
-        formatter.format("select *from hotelInfo\n" +
-                "where addday > '%s' and addday < '%s' \n" +
-                "or (addday = '%s' and addtime >= '%s' and addday <> '%s' ) \n" +
-                "or (addday = '%s' and addtime <=  '%s' and addday <> '%s') \n" +
-                "or (addday = '%s' and addtime >=  '%s' and addtime <= '%s')",         StartDay,EndDay,
-                StartDay,StartTime,EndDay,
-                EndDay,EndTime,StartDay,
-                StartDay,StartTime,EndTime
-        );
-        Log.e("sql", formatter.toString() );
+//        StringBuilder sb = new StringBuilder();
+//// Send all output to the Appendable object sb
+//        Formatter formatter = new Formatter(sb, Locale.US);
+//        formatter.format("select *from hotelInfo\n" +
+//                "where addday > '%s' and addday < '%s' \n" +
+//                "or (addday = '%s' and addtime >= '%s' and addday <> '%s' ) \n" +
+//                "or (addday = '%s' and addtime <=  '%s' and addday <> '%s') \n" +
+//                "or (addday = '%s' and addtime >=  '%s' and addtime <= '%s')",         StartDay,EndDay,
+//                StartDay,StartTime,EndDay,
+//                EndDay,EndTime,StartDay,
+//                StartDay,StartTime,EndTime
+//        );
+//        Log.e("sql", formatter.toString() );
         Cursor cursor = db.rawQuery("select *from hotelInfo\n" +
                 "where addday > ? and addday < ? \n" +
                 "or (addday = ? and addtime >= ? and addday <> ? ) \n" +
@@ -212,8 +225,9 @@ public class DAO {
                     }
                 );
         Log.e("查询结果数量", "" + cursor.getCount() );
+        ArrayList<Data> ans = getData(cursor);
         db.close();
-        return getData(cursor);
+        return ans;
     }
     ArrayList<Data> getData(Cursor cursor)
     {

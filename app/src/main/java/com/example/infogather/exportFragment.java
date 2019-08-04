@@ -145,10 +145,9 @@ public class exportFragment extends Fragment {
         tvStartTime = getActivity().findViewById(R.id.tv_start_time);
         tvEndTime = getActivity().findViewById(R.id.tv_end_time);
         ButOk = getActivity().findViewById(R.id.btn_query);
-        EditHotelNmae = getActivity().findViewById(R.id.edit_hotel_name);
+        EditHotelNmae = getActivity().findViewById(R.id.edit_hotel_name_export);
         RbExportAllData = getActivity().findViewById(R.id.rb_all_data);
         RbTodayData = getActivity().findViewById(R.id.rb_today);
-        EditHotelNmae.setFilterTouchesWhenObscured(false);
         tvEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,20 +181,7 @@ public class exportFragment extends Fragment {
 
         CbExportHotelName = getActivity().findViewById(R.id.ch_hotel_export);
         CbExportTime = getActivity().findViewById(R.id.ch_on_time);
-        CbExportHotelName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean flag = CbExportHotelName.isChecked();
-                if(flag == true)
-                {
-                    EditHotelNmae.setFilterTouchesWhenObscured(true);
-                }
-                else
-                {
-                    EditHotelNmae.setFilterTouchesWhenObscured(false);
-                }
-            }
-        });
+
     }
     Pair<String ,String>getStartandEndDayTime(String s)
     {
@@ -229,13 +215,17 @@ public class exportFragment extends Fragment {
                     builder.show();
                     return ;
                 }
-                else
+                else if(count>0)
                 {
                     AlertDialog.Builder builder  = new AlertDialog.Builder(getContext());
                     builder.setTitle("提示" ) ;
                     builder.setMessage("查询完成总共有："+count+"条数据" ) ;
                     builder.setPositiveButton("确定" ,  null );
                     builder.show();
+                }
+                else
+                {
+                    Toast.makeText(getActivity(),"错误",Toast.LENGTH_LONG).show();
                 }
 //                try {
 //                    ExcelUtils.writeExcel(getContext(),ans,"导出数据");
@@ -251,15 +241,11 @@ public class exportFragment extends Fragment {
     }
     int ExportDataONnExcel()
     {
-        if(CbExportTime.isChecked() == true && CbExportHotelName.isChecked() == true)
-        {
-            String HotelName = EditHotelNmae.getText().toString();
-            if( HotelName == "")return -1;
-        }
-        else
         if(CbExportHotelName.isChecked())//按酒店名导出
         {
             String HotelName = EditHotelNmae.getText().toString();
+            Log.d("HotelName:",HotelName );
+            Toast.makeText(getActivity(),"酒店名"+HotelName,Toast.LENGTH_LONG).show();
             if( HotelName == "")return -1;
             if(RbTodayData.isChecked() == true)
             {
@@ -281,10 +267,10 @@ public class exportFragment extends Fragment {
             {
                 DAO dataQuery = new DAO(getContext());
                 String time = getToday();
-                List<Data> ans = dataQuery.QureyHotelNameAndTime(HotelName,"1970-1-1",time,"00:00:00" ,"23:59:59");
+                List<Data> ans = dataQuery.QureyHotelNameAndTime(HotelName,"2000-01-01",time,"00:00:00" ,"23:59:59");
                 if(ans.size() == 0)return 0;
                 try {
-                    ExcelUtils.writeExcel(getContext(),ans,"导出数据:"+HotelName+time);
+                    ExcelUtils.writeExcel(getContext(),ans,"导出数据:"+HotelName+"all");
                 } catch (Exception e) {
                     Toast.makeText(getActivity(),"导出失败（文件无法创建）",Toast.LENGTH_LONG).show();
                     e.printStackTrace();
@@ -329,9 +315,21 @@ public class exportFragment extends Fragment {
                 Toast.makeText(getActivity(),"导出成功",Toast.LENGTH_LONG).show();
                 return ans.size();
             }
-            else if(RbExportAllData.isChecked())
+            else if(RbExportAllData.isChecked() == true)
             {
-
+                DAO dataQuery = new DAO(getContext());
+                Log.e("导出全部数据", "ExportDataONnExcel: "+getToday() );
+                String time = getToday();
+                List<Data> ans = dataQuery.QueryAppointTimeData("2000-01-01",time,"00:00:00" ,"23:59:59");
+                try {
+                    ExcelUtils.writeExcel(getContext(),ans,"导出数据"+time+"alldata");
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(),"导出失败（文件无法创建）",Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                    return -1;
+                }
+                Toast.makeText(getActivity(),"导出成功",Toast.LENGTH_LONG).show();
+                return ans.size();
             }
             else
             {
@@ -351,8 +349,6 @@ public class exportFragment extends Fragment {
                 return ans.size();
             }
         }
-
-        return 0;
     }
     String getToday()
     {
