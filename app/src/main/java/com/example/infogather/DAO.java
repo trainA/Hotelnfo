@@ -153,10 +153,27 @@ public class DAO {
         db.close();
         return list;
     }
+    public ArrayList<Data>QureyHotelNameAndTime(String HotelName,String StartDay,String EndDay,String StartTime,String EndTime)
+    {
+        DBOpenHelper helper=new DBOpenHelper(context);
+        //2.获取Sqlite DB的实例
+        SQLiteDatabase db= helper.getWritableDatabase();
+                Cursor cursor = db.rawQuery("select *from hotelInfo\n" +
+                "where (addday > ? and addday < ? and hotelname = ?)\n" +
+                "or (addday =  ? and addtime >=  ?  and addday <>  ?and hotelname = ?  ) \n" +
+                "or (addday =  ?  and addtime < ? and addday <>  ? and hotelname = ?) \n" +
+                "or (addday =  ?  and addtime >=  ?  and addtime <=  ? and hotelname = ?)", new String[]{StartDay,EndDay,HotelName,
+                                                                                            StartDay,StartTime,EndDay,HotelName,
+                                                                                            EndDay, EndTime,StartDay,HotelName,
 
+                                                                           StartDay,StartTime,EndTime,HotelName,});
+
+                 db.close();
+                return getData(cursor);
+    }
     public ArrayList<Data> QueryAppointTimeData(String StartDay,String EndDay,String StartTime,String EndTime){
 
-        ArrayList<Data> ans = new ArrayList<>();
+
         DBOpenHelper helper=new DBOpenHelper(context);
         //2.获取Sqlite DB的实例
         SQLiteDatabase db= helper.getWritableDatabase();
@@ -195,7 +212,12 @@ public class DAO {
                     }
                 );
         Log.e("查询结果数量", "" + cursor.getCount() );
-
+        db.close();
+        return getData(cursor);
+    }
+    ArrayList<Data> getData(Cursor cursor)
+    {
+        ArrayList<Data> ans = new ArrayList<>();
         while (cursor.moveToNext()) {
             Data obj=new Data();
             obj.setId(cursor.getLong(cursor.getColumnIndex(Database.HotelInfo.Column.ID)));
@@ -209,8 +231,6 @@ public class DAO {
 //                    + obj.getHotelname()+" "+obj.getHotelroomname()+" "+obj.getDevicenumber()+" "+obj.getRemake());
             ans.add(obj);
         }
-        cursor.close();
-        db.close();
         return ans;
     }
     //根据ID获取Student实例

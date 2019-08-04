@@ -223,7 +223,7 @@ public class addFragment extends Fragment {
     }
     Data getData()
     {
-        Data data = new Data();
+
         String remark =  editRemark.getText().toString();
         if(editHotelName.getText().toString().isEmpty()  == true||
                 editHOtelRomeName.getText().toString().isEmpty() == true||
@@ -232,6 +232,7 @@ public class addFragment extends Fragment {
         {
             return null;
         }
+        Data data = new Data();
         if(remark.isEmpty())remark = "无";
         data.setId(getNowTimeValue());
         data.setTime(getNowTime());

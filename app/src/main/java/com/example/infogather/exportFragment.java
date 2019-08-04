@@ -263,15 +263,52 @@ public class exportFragment extends Fragment {
             if( HotelName == "")return -1;
             if(RbTodayData.isChecked() == true)
             {
-
+                DAO dataQuery = new DAO(getContext());
+                String time = getToday();
+                List<Data> ans = dataQuery.QureyHotelNameAndTime(HotelName,time,time,"00:00:00" ,"23:59:59");
+                if(ans.size() == 0)return 0;
+                try {
+                    ExcelUtils.writeExcel(getContext(),ans,"导出数据:"+HotelName+time);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(),"导出失败（文件无法创建）",Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                    return -1;
+                }
+                Toast.makeText(getActivity(),"导出成功",Toast.LENGTH_LONG).show();
+                return ans.size();
             }
             else if(RbExportAllData.isChecked())
             {
-
+                DAO dataQuery = new DAO(getContext());
+                String time = getToday();
+                List<Data> ans = dataQuery.QureyHotelNameAndTime(HotelName,"1970-1-1",time,"00:00:00" ,"23:59:59");
+                if(ans.size() == 0)return 0;
+                try {
+                    ExcelUtils.writeExcel(getContext(),ans,"导出数据:"+HotelName+time);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(),"导出失败（文件无法创建）",Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                    return -1;
+                }
+                Toast.makeText(getActivity(),"导出成功",Toast.LENGTH_LONG).show();
+                return ans.size();
             }
             else
             {
-
+                DAO dataQuery = new DAO(getContext());
+                Pair<String,String>start = getStartandEndDayTime(tvStartTime.getText().toString());
+                Pair<String,String>end = getStartandEndDayTime(tvEndTime.getText().toString());
+                List<Data> ans = dataQuery.QureyHotelNameAndTime(HotelName,start.first,end.first,start.second ,end.second);
+                if(ans.size() == 0)return 0;
+                try {
+                    ExcelUtils.writeExcel(getContext(),ans,"导出数据:"+HotelName+start.first+"到"+end.first);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(),"导出失败（文件无法创建）",Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                    return -1;
+                }
+                Toast.makeText(getActivity(),"导出成功",Toast.LENGTH_LONG).show();
+                return ans.size();
             }
         }
         else //按时间导出
@@ -285,8 +322,11 @@ public class exportFragment extends Fragment {
                 try {
                     ExcelUtils.writeExcel(getContext(),ans,"导出数据"+time);
                 } catch (Exception e) {
+                    Toast.makeText(getActivity(),"导出失败（文件无法创建）",Toast.LENGTH_LONG).show();
                     e.printStackTrace();
+                    return -1;
                 }
+                Toast.makeText(getActivity(),"导出成功",Toast.LENGTH_LONG).show();
                 return ans.size();
             }
             else if(RbExportAllData.isChecked())
@@ -305,6 +345,7 @@ public class exportFragment extends Fragment {
                 } catch (Exception e) {
                     Toast.makeText(getActivity(),"导出失败（文件无法创建）",Toast.LENGTH_LONG).show();
                     e.printStackTrace();
+                    return -1;
                 }
                 Toast.makeText(getActivity(),"导出成功",Toast.LENGTH_LONG).show();
                 return ans.size();
