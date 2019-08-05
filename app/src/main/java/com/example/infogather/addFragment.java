@@ -283,25 +283,5 @@ public class addFragment extends Fragment {
             }
         });
     }
-//    View.OnKeyListener backLstener = new View.OnKeyListener() {
-//        @Override
-//        public boolean onKey(View view, int keycode, KeyEvent keyEvent) {
-//            if(keycode == KeyEvent.KEYCODE_BACK&&
-//                keyEvent.getAction() == keyEvent.ACTION_DOWN)
-//            {
-//                AlertDialog.Builder builder  = new AlertDialog.Builder(getContext());
-//                builder.setTitle("退出以后将不会保存这次添加的临时数据  是否退出程序" ) ;
-//                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        System.exit(0);
-//                    }
-//                });
-//                builder.show();
-//
-//            }
-//
-//            return false;
-//        }
-//    };
+
 }

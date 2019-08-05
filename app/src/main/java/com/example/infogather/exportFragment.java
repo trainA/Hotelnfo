@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ public class exportFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    Spinner SpinnerHotelNameList;
     Button ButOk;
     TextView tvStartTime,tvEndTime;
     RadioButton RbExportAllData,RbTodayData;
@@ -140,11 +142,16 @@ public class exportFragment extends Fragment {
         String end = format.format(endtime.getTime());
         return new Pair<>(start,end);
     }
+//    void hotelListInit()
+//    {
+//        SpinnerHotelNameList
+//    }
     void Init()
     {
         tvStartTime = getActivity().findViewById(R.id.tv_start_time);
         tvEndTime = getActivity().findViewById(R.id.tv_end_time);
         ButOk = getActivity().findViewById(R.id.btn_query);
+        SpinnerHotelNameList = getActivity().findViewById(R.id.spinner_hotel_name);
         EditHotelNmae = getActivity().findViewById(R.id.edit_hotel_name_export);
         RbExportAllData = getActivity().findViewById(R.id.rb_all_data);
         RbTodayData = getActivity().findViewById(R.id.rb_today);

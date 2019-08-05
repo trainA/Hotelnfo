@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.setList(mlist);
         viewPager.setAdapter(viewPagerAdapter);
-
+        viewPager.setOffscreenPageLimit(3);//设置页面缓存个数
     }
     //申请读写权限
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
