@@ -1,25 +1,27 @@
-package com.example.infogather;
+package com.example.infogather.fragment;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.infogather.DAO;
+import com.example.infogather.Data;
+import com.example.infogather.R;
+import com.example.infogather.hotelDataAdapt;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -155,7 +157,8 @@ public class addFragment extends Fragment {
 //            map.put("tv4","备注--"+(i+1));
 //            mlist.add(map);
 //        }
-        adapter = new SimpleAdapter(getContext(),mlist,R.layout.layout_item,new String[]{"tv1","tv2","tv3","tv4","tv5"},new int[]{R.id.tv_addday,R.id.tv_addtime,R.id.tv_hotelname,R.id.tv_hotelroomname,R.id.tv_device_number});
+        adapter = new SimpleAdapter(getContext(),mlist,R.layout.layout_item,new String[]{"tv1","tv2","tv3","tv4","tv5"},
+                new int[]{R.id.tv_addday,R.id.tv_addtime,R.id.tv_hotelname,R.id.tv_hotelroomname,R.id.tv_device_number});
         lvAddDataShow.setAdapter(adapter);
         lvAddDataShow.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -171,12 +174,20 @@ public class addFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
 
                         long ans = management.deleteByHotelNameinHotelRomm(map.get("tv1").toString(),map.get("tv2").toString(),map.get("tv3").toString(),map.get("tv4").toString());
-                        if(ans>0)
+                        if(ans > 0)
                         {
                             mlist.remove(position);
                             adapter.notifyDataSetChanged();//刷新数据
-                            Toast.makeText(getContext(),"删除成功",Toast.LENGTH_SHORT).show();
+
                             ReduceEquipments(0);
+                            if(ans >1)
+                            {
+                                Toast.makeText(getContext(),"删除数据未知错误删除了： " + Long.toString(ans)+"个数据",Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getContext(),"删除成功",Toast.LENGTH_SHORT).show();
+                            }
                         }
                         else
                         {

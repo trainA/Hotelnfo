@@ -1,12 +1,27 @@
-package com.example.infogather;
+package com.example.infogather.fragment;
 
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
+
+import com.example.infogather.DAO;
+import com.example.infogather.Data;
+import com.example.infogather.MainActivity;
+import com.example.infogather.R;
+
+import java.util.ArrayList;
 
 
 /**
@@ -26,7 +41,9 @@ public class QueryFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    Button BtnQueryData;
+    EditText editDevice,editHotelName;
+    DAO management;
     private OnFragmentInteractionListener mListener;
 
     public QueryFragment() {
@@ -72,7 +89,65 @@ public class QueryFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+    void init()
+    {
+        management = new DAO(getContext());
+        BtnQueryData = getActivity().findViewById(R.id.btn_query_data);
+        editDevice = getActivity().findViewById(R.id.edit_device_number_find);
+        editHotelName = getActivity().findViewById(R.id.edit_hotel_name_find);
 
+    }
+    void listen()
+    {
+        BtnQueryData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String deviceNum = editDevice.getText().toString();
+                if(deviceNum.isEmpty() == false)
+                {
+                    ArrayList<Data> ans = management.getByDeviceNumber(deviceNum);
+                    Log.e("查询到的数据", Integer.toString(ans.size()) );
+                    dialogList();
+                    if(ans.size() >0)
+                    {
+                        Toast.makeText(getContext(),"查询到"+Integer.toString(ans.size())+"条数据",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+        });
+    }
+    private void dialogList() {
+        final String items[] = {"列表1", "列表2", "列表3", "列表4"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),0);
+        builder.setTitle("查询到的设备");
+//        builder.setIcon(R.mipmap.ic_launcher);
+        // 设置列表显示，注意设置了列表显示就不要设置builder.setMessage()了，否则列表不起作用。
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+            }
+        });
+        builder.create().show();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        init();
+        listen();
+    }
 
     @Override
     public void onDetach() {

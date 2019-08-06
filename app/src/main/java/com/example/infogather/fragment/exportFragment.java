@@ -1,7 +1,6 @@
-package com.example.infogather;
+package com.example.infogather.fragment;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,19 +16,19 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.infogather.DAO;
+import com.example.infogather.Data;
+import com.example.infogather.ExcelUtils;
+import com.example.infogather.R;
+
 import org.feezu.liuli.timeselector.TimeSelector;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 
 /**
@@ -45,7 +44,6 @@ public class exportFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    Spinner SpinnerHotelNameList;
     Button ButOk;
     TextView tvStartTime,tvEndTime;
     RadioButton RbExportAllData,RbTodayData;
@@ -151,7 +149,6 @@ public class exportFragment extends Fragment {
         tvStartTime = getActivity().findViewById(R.id.tv_start_time);
         tvEndTime = getActivity().findViewById(R.id.tv_end_time);
         ButOk = getActivity().findViewById(R.id.btn_query);
-        SpinnerHotelNameList = getActivity().findViewById(R.id.spinner_hotel_name);
         EditHotelNmae = getActivity().findViewById(R.id.edit_hotel_name_export);
         RbExportAllData = getActivity().findViewById(R.id.rb_all_data);
         RbTodayData = getActivity().findViewById(R.id.rb_today);

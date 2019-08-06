@@ -6,17 +6,17 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.Window;
-import android.widget.TextView;
+
+import com.example.infogather.fragment.QueryFragment;
+import com.example.infogather.fragment.addFragment;
+import com.example.infogather.fragment.exportFragment;
 
 import java.util.ArrayList;
 import java.util.List;
