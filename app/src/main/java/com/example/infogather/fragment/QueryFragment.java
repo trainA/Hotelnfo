@@ -1,6 +1,7 @@
 package com.example.infogather.fragment;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +23,9 @@ import com.example.infogather.MainActivity;
 import com.example.infogather.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -103,35 +107,70 @@ public class QueryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String deviceNum = editDevice.getText().toString();
-                if(deviceNum.isEmpty() == false)
+                String hotelName = editHotelName.getText().toString();
+                System.out.println(("状态"+deviceNum.isEmpty() + hotelName.isEmpty()));
+                if(deviceNum.isEmpty() == false && hotelName.isEmpty() == false)
+                {
+                    ArrayList<Data> ans = management.getByHotelNameAndDevice(hotelName,deviceNum);
+                    Log.e("查询到的数据", Integer.toString(ans.size()) );
+
+                    if(ans.size() >0)
+                    {
+                        dialogList(ans);
+                        Toast.makeText(getContext(),"设备号和酒店名查询到"+Integer.toString(ans.size())+"条数据",Toast.LENGTH_SHORT).show();
+                    }
+                }else  if(deviceNum.isEmpty() == false)
                 {
                     ArrayList<Data> ans = management.getByDeviceNumber(deviceNum);
                     Log.e("查询到的数据", Integer.toString(ans.size()) );
-                    dialogList();
+
                     if(ans.size() >0)
                     {
-                        Toast.makeText(getContext(),"查询到"+Integer.toString(ans.size())+"条数据",Toast.LENGTH_SHORT).show();
+                        dialogList(ans);
+                        Toast.makeText(getContext(),"按设备号查询到"+Integer.toString(ans.size())+"条数据",Toast.LENGTH_SHORT).show();
                     }
 
+                }
+                else if(hotelName.isEmpty() == false)
+                {
+                    ArrayList<Data>ans =  management.getByHotelName(hotelName);
+                    if(ans.size() >0)
+                    {
+                        dialogList(ans);
+                        Toast.makeText(getContext(),"按酒店名查询到"+Integer.toString(ans.size())+"条数据",Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
     }
-    private void dialogList() {
-        final String items[] = {"列表1", "列表2", "列表3", "列表4"};
+    private void dialogList(final ArrayList<Data> list) {
+        List<Map<String,Object>> mlist = new ArrayList<>();
+        for(int i = 0;i<list.size();i++)
+        {
+            Map<String,Object> map;
+            map = new HashMap<>();
+            map.put("tv1",list.get(i).getDay());
+            map.put("tv2",list.get(i).getTime());
+            map.put("tv3",list.get(i).getHotelname());
+            map.put("tv4",list.get(i).getHotelroomname());
+            map.put("tv5",list.get(i).getDevicenumber());
+            mlist.add(map);
+        }
 
+        SimpleAdapter   adapter = new SimpleAdapter(getContext(),mlist,R.layout.layout_item,new String[]{"tv1","tv2","tv3","tv4","tv5"},
+                new int[]{R.id.tv_addday,R.id.tv_addtime,R.id.tv_hotelname,R.id.tv_hotelroomname,R.id.tv_device_number});
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),0);
-        builder.setTitle("查询到的设备");
+        builder.setTitle("查询结果：" + "总共有"+Integer.toString(list.size())+"个数据");
 //        builder.setIcon(R.mipmap.ic_launcher);
         // 设置列表显示，注意设置了列表显示就不要设置builder.setMessage()了，否则列表不起作用。
-        builder.setItems(items, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(adapter, 0, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
-
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Log.e("点击了：",Integer.toString(i) );
+                dialogNormal(list.get(i));
             }
         });
+
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -142,6 +181,40 @@ public class QueryFragment extends Fragment {
         builder.create().show();
     }
 
+    private void dialogNormal(Data data) {
+        DialogInterface.OnClickListener dialogOnclicListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case Dialog.BUTTON_POSITIVE:
+
+                        break;
+//                    case Dialog.BUTTON_NEGATIVE:
+//                        Toast.makeText(MainActivity.this, "取消",
+//                                Toast.LENGTH_SHORT).show();
+//                        break;
+//                    case Dialog.BUTTON_NEUTRAL:
+//                        Toast.makeText(MainActivity.this, "忽略",
+//                                Toast.LENGTH_SHORT).show();
+//                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setTitle("详细信息");
+
+        builder.setMessage("添加日期："+data.getDay()+"\n"+
+                           "添加时间："+data.getTime()+"\n"+
+                           "酒店名："  +data.getHotelname()+"\n"+
+                            "房间号：" +data.getHotelroomname()+"\n"+
+                            "设备号： " + data.getDevicenumber() +"\n"+
+                            "备注信息："+data.getRemake());      //设置内容
+        builder.setPositiveButton("确认", dialogOnclicListener);
+
+        builder.create().show();
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

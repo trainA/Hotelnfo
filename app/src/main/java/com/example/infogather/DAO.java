@@ -264,5 +264,26 @@ public class DAO {
         db.close();
         return ans;
     }
-
+    public  ArrayList<Data> getByHotelNameAndDevice(String HotelName,String DeviceNum)
+    {
+        DBOpenHelper helper=new DBOpenHelper(context);
+        //2.获取Sqlite DB的实例
+        SQLiteDatabase db= helper.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from hotelInfo\n" +
+                "where devicenumber like ? and hotelname like ?",new String[]{"%"+DeviceNum+"%","?"+HotelName+"?"});
+        ArrayList<Data> ans = getData(cursor);
+        db.close();
+        return ans;
+    }
+    public  ArrayList<Data> getByHotelName(String HotelName)
+    {
+        DBOpenHelper helper=new DBOpenHelper(context);
+        //2.获取Sqlite DB的实例
+        SQLiteDatabase db= helper.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select *from hotelInfo \n" +
+                "where hotelname like ?",new String[]{"%"+HotelName+"%"});
+        ArrayList<Data> ans = getData(cursor);
+        db.close();
+        return ans;
+    }
 }
