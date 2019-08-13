@@ -5,7 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".fragment.QueryFragment">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
 
+</LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -41,41 +46,57 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <LinearLayout
-        android:gravity="top"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+    <!--<LinearLayout-->
+        <!--android:gravity="top"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent">-->
 
-        <RadioGroup
+        <!--<RadioGroup-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+
+            <!--<RadioButton-->
+                <!--android:id="@+id/radioButton2"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="模糊查询" />-->
+
+            <!--<RadioButton-->
+                <!--android:id="@+id/radioButton"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="精确查询" />-->
+    <!--</RadioGroup>-->
+    <!--</LinearLayout>-->
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="top"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RadioButton
-                android:id="@+id/radioButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="模糊查询" />
 
-            <RadioButton
-                android:id="@+id/radioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="精确查询" />
-    </RadioGroup>
-    </LinearLayout>
-        <LinearLayout
-            android:gravity="top"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
 
 
             <Button
                 android:id="@+id/btn_query_data"
                 android:text="查询"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btn_hotel_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="查看酒店" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="输入部分酒店名设备号即可查询，支持模糊查询，支持同时模糊查询酒店名加设备号" />
         </LinearLayout>
 
     </LinearLayout>
