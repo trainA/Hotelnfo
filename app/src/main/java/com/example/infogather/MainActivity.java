@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         Window window = dlg.getWindow();
         window.setContentView(R.layout.close_program);
         TextView tv = (TextView) window.findViewById(R.id.tv_no);
-        tv.setText("你确定要退出吗");
+        tv.setText("退出程序将会使当前添加的数据显示列表清空您确认要退出吗？");
         LinearLayout ok = (LinearLayout) window.findViewById(R.id.tv_ok);
 
         //确定按钮
