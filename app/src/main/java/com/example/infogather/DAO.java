@@ -266,6 +266,18 @@ public class DAO {
         List<Data> list=list("id=?",new String[]{id+""});
         return list.size()>0?list.get(0):null;
     }
+    public  ArrayList<Data> getByHotelNameAndRoomNum(String hotelName,String roomNum)
+    {
+        ArrayList<Data> ans = null;
+        DBOpenHelper helper=new DBOpenHelper(context);
+        //2.获取Sqlite DB的实例
+        SQLiteDatabase db= helper.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select  *from hotelInfo\n" +
+                "where hotelname like ? and hotelroomname = ?",new String[]{"%"+hotelName+"%",roomNum});
+        ans = getData(cursor);
+        db.close();
+        return ans;
+    }
     public  ArrayList<Data> getByDeviceNumber(String deviceNum)
     {
         DBOpenHelper helper=new DBOpenHelper(context);

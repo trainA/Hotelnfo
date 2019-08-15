@@ -46,7 +46,7 @@ public class QueryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     Button BtnQueryData,BtnShowHotel;
-    EditText editDevice,editHotelName;
+    EditText editDevice,editHotelName,editHotelRoomNum;
     DAO management;
     private OnFragmentInteractionListener mListener;
 
@@ -100,7 +100,7 @@ public class QueryFragment extends Fragment {
         editDevice = getActivity().findViewById(R.id.edit_device_number_find);
         editHotelName = getActivity().findViewById(R.id.edit_hotel_name_find);
         BtnShowHotel = getActivity().findViewById(R.id.btn_show_hotel_all);
-
+        editHotelRoomNum = getActivity().findViewById(R.id.edit_hotel_room_num_find);
     }
     void listen()
     {
@@ -124,36 +124,44 @@ public class QueryFragment extends Fragment {
             public void onClick(View view) {
                 String deviceNum = editDevice.getText().toString();
                 String hotelName = editHotelName.getText().toString();
+                String hotelRoomNum = editHotelRoomNum.getText().toString();
+                if(deviceNum.isEmpty() == true &&  hotelName.isEmpty() == true)
+                {
+                    Toast.makeText(getContext(),"请输入酒店名或者设备号进行数据查询",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                ArrayList<Data>ans = null;
                 if(deviceNum.isEmpty() == false && hotelName.isEmpty() == false)
                 {
-                    ArrayList<Data> ans = management.getByHotelNameAndDevice(hotelName,deviceNum);
-                    Log.e("查询到的数据", Integer.toString(ans.size()) );
+                     ans = management.getByHotelNameAndDevice(hotelName,deviceNum);
+//                    Log.e("查询到的数据", Integer.toString(ans.size()) );
 
-                    if(ans.size() >0)
-                    {
-                        dialogList(ans);
-                        Toast.makeText(getContext(),"设备号和酒店名查询到"+Integer.toString(ans.size())+"条数据",Toast.LENGTH_SHORT).show();
-                    }
+
                 }else  if(deviceNum.isEmpty() == false)
                 {
-                    ArrayList<Data> ans = management.getByDeviceNumber(deviceNum);
-                    Log.e("查询到的数据", Integer.toString(ans.size()) );
+                     ans = management.getByDeviceNumber(deviceNum);
+//                    Log.e("查询到的数据", Integer.toString(ans.size()) );
 
-                    if(ans.size() >0)
-                    {
-                        dialogList(ans);
-                        Toast.makeText(getContext(),"按设备号查询到"+Integer.toString(ans.size())+"条数据",Toast.LENGTH_SHORT).show();
-                    }
-
+                }
+                else if(hotelRoomNum.isEmpty()==false && hotelName.isEmpty() == false)
+                {
+                    ans = management.getByHotelNameAndRoomNum(hotelName,hotelRoomNum);
                 }
                 else if(hotelName.isEmpty() == false)
                 {
-                    ArrayList<Data>ans =  management.getByHotelName(hotelName);
-                    if(ans.size() >0)
-                    {
-                        dialogList(ans);
-                        Toast.makeText(getContext(),"按酒店名查询到"+Integer.toString(ans.size())+"条数据",Toast.LENGTH_SHORT).show();
-                    }
+                    ans =  management.getByHotelName(hotelName);
+                }
+                if (ans == null) {
+                    Toast.makeText(getContext(),"查询失败",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(ans.size() >0)
+                {
+                    dialogList(ans);
+                }
+                else
+                {
+                    Toast.makeText(getContext(),"没有查询到相关数据",Toast.LENGTH_SHORT).show();
                 }
             }
         });
