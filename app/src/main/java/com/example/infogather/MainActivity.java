@@ -13,6 +13,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.infogather.fragment.QueryFragment;
 import com.example.infogather.fragment.addFragment;
@@ -111,18 +115,59 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    @Override
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        AlertDialog.Builder builder  = new AlertDialog.Builder(this);
+//        builder.setTitle("退出以后将不会保存这次添加的临时数据  是否退出程序" ) ;
+//        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                System.exit(0);
+//            }
+//        });
+//        builder.setNegativeButton("取消",null);
+//        builder.show();
+//        return super.onKeyDown(keyCode, event);
+//    }
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        AlertDialog.Builder builder  = new AlertDialog.Builder(this);
-        builder.setTitle("退出以后将不会保存这次添加的临时数据  是否退出程序" ) ;
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                System.exit(0);
-            }
-        });
-        builder.setNegativeButton("取消",null);
-        builder.show();
+        if(keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_HOME){
+            showExitGameAlert();
+        }
         return super.onKeyDown(keyCode, event);
     }
+
+    private void showExitGameAlert() {
+        final AlertDialog dlg = new AlertDialog.Builder(this).create();
+        dlg.show();
+        Window window = dlg.getWindow();
+        window.setContentView(R.layout.close_program);
+        TextView tv = (TextView) window.findViewById(R.id.tv_no);
+        tv.setText("你确定要退出吗");
+        LinearLayout ok = (LinearLayout) window.findViewById(R.id.tv_ok);
+
+        //确定按钮
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                exit(); // 退出应用
+            }
+        });
+
+        //取消按钮
+        LinearLayout cancel = (LinearLayout) window.findViewById(R.id.tv_cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dlg.cancel();
+            }
+        });
+    }
+
+    //关闭程序
+
+    private void exit() {
+        super.finish();
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
+    }
+
 }

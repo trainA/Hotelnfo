@@ -247,6 +247,19 @@ public class DAO {
         }
         return ans;
     }
+    public ArrayList<String> getByHotelCount()
+    {
+        DBOpenHelper helper=new DBOpenHelper(context);
+        //2.获取Sqlite DB的实例
+        SQLiteDatabase db= helper.getWritableDatabase();
+        Cursor cursor =db.query(true,Database.HotelInfo.TABLE_NAME,new String[]{"hotelname"},null,null,null,null,null,null);
+       ArrayList<String> ans = new ArrayList<>();
+        while (cursor.moveToNext())
+        {
+            ans.add(cursor.getString(0));
+        }
+        return ans;
+    }
     //根据ID获取Student实例
     public Data getById(long id){
         //根据指定条件获取Student列表

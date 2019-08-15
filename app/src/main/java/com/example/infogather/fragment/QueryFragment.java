@@ -45,7 +45,7 @@ public class QueryFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    Button BtnQueryData;
+    Button BtnQueryData,BtnShowHotel;
     EditText editDevice,editHotelName;
     DAO management;
     private OnFragmentInteractionListener mListener;
@@ -99,16 +99,31 @@ public class QueryFragment extends Fragment {
         BtnQueryData = getActivity().findViewById(R.id.btn_query_data);
         editDevice = getActivity().findViewById(R.id.edit_device_number_find);
         editHotelName = getActivity().findViewById(R.id.edit_hotel_name_find);
+        BtnShowHotel = getActivity().findViewById(R.id.btn_show_hotel_all);
 
     }
     void listen()
     {
+        BtnShowHotel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> list = management.getByHotelCount();
+                if(list.size()>0)
+                {
+                    showListHotelDialog(list);
+                }
+                else
+                {
+                    Toast.makeText(getContext(),"没有查询到相关数据",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
         BtnQueryData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String deviceNum = editDevice.getText().toString();
                 String hotelName = editHotelName.getText().toString();
-                System.out.println(("状态"+deviceNum.isEmpty() + hotelName.isEmpty()));
                 if(deviceNum.isEmpty() == false && hotelName.isEmpty() == false)
                 {
                     ArrayList<Data> ans = management.getByHotelNameAndDevice(hotelName,deviceNum);
@@ -163,10 +178,10 @@ public class QueryFragment extends Fragment {
         builder.setTitle("查询结果：" + "总共有"+Integer.toString(list.size())+"个数据");
 //        builder.setIcon(R.mipmap.ic_launcher);
         // 设置列表显示，注意设置了列表显示就不要设置builder.setMessage()了，否则列表不起作用。
-        builder.setSingleChoiceItems(adapter, 0, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(adapter, 0,new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Log.e("点击了：",Integer.toString(i) );
+            //    Log.e("点击了：",Integer.toString(i) );
                 dialogNormal(list.get(i));
             }
         });
@@ -178,9 +193,37 @@ public class QueryFragment extends Fragment {
 
             }
         });
-        builder.create().show();
+        builder.show();
     }
+    private void showListHotelDialog(final ArrayList<String> items) {
+        List<Map<String,String>> mlist = new ArrayList<>();
+        for(int i = 0;i<items.size();i++)
+        {
+            Map<String,String> map;
+            map = new HashMap<>();
+            map.put("tv1",items.get(i));
+            mlist.add(map);
+        }
+        SimpleAdapter  adapter = new SimpleAdapter(getContext(),mlist,R.layout.layout_hotel_show,new String[]{"tv1"},new int[]{R.id.tv_hotelname_list});
+        final AlertDialog.Builder listDialog = new AlertDialog.Builder(getContext(),0);
+        listDialog.setTitle("酒店数量："+items.size());
+        listDialog.setSingleChoiceItems(adapter, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String ins = items.get(i);
+                editHotelName.setText(ins);
+                dialogInterface.dismiss();
+            }
+        });
+        listDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
 
+            }
+        });
+        listDialog.show();
+    }
     private void dialogNormal(Data data) {
         DialogInterface.OnClickListener dialogOnclicListener = new DialogInterface.OnClickListener() {
             @Override
