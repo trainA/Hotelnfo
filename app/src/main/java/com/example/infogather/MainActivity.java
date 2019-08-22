@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -11,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +24,12 @@ import android.widget.TextView;
 import com.example.infogather.fragment.QueryFragment;
 import com.example.infogather.fragment.addFragment;
 import com.example.infogather.fragment.exportFragment;
+import com.example.infogather.util.DataBaseUtil;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private MenuItem menuItem;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
      //   requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        copyDataBaseToPhone();
 
         verifyStoragePermissions(this);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
@@ -168,6 +178,21 @@ public class MainActivity extends AppCompatActivity {
         super.finish();
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
+    }
+    private void copyDataBaseToPhone() {
+        DataBaseUtil util = new DataBaseUtil(this);
+        // 判断数据库是否存在
+        boolean dbExist = util.checkDataBase();
+
+        if (dbExist) {
+            Log.i("tag", "The database is exist.");
+        } else {// 不存在就把raw里的数据库写入手机
+            try {
+                util.copyDataBase();
+            } catch (IOException e) {
+                throw new Error("Error copying database");
+            }
+        }
     }
 
 }
